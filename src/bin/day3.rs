@@ -2,7 +2,7 @@ use std::{collections::{HashSet, btree_set::Intersection}, fs};
 
 fn main() {
     // Read the input from the file
-    let input = fs::read_to_string("day3.txt").expect("Failed to read file");
+    let input = fs::read_to_string("inputs/day3.txt").expect("Failed to read file");
     let sum_priorities: u32 = input
         .lines()
         .map(|items| {

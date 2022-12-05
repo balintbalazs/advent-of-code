@@ -4,7 +4,7 @@ use scan_fmt::scan_fmt;
 
 fn main() {
     // Read the input from the file
-    let input = fs::read_to_string("day4.txt").expect("Failed to read file");
+    let input = fs::read_to_string("inputs/day4.txt").expect("Failed to read file");
     let fully_overlapping_pairs = input
         .lines()
         .map(|line| scan_fmt!(line, "{d}-{d},{d}-{d}", i32, i32, i32, i32).unwrap())

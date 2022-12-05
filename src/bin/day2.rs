@@ -2,7 +2,7 @@ use std::fs;
 
 fn main() {
     // Read the input from the file
-    let input = fs::read_to_string("day2.txt").expect("Failed to read file");
+    let input = fs::read_to_string("inputs/day2.txt").expect("Failed to read file");
     let score_part1: u32 = input.lines().map(|line| {
       let opp = line.chars().nth(0).unwrap();
       let me = line.chars().nth(2).unwrap();
