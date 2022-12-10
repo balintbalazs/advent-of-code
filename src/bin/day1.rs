@@ -9,7 +9,8 @@ fn main() {
             elf.lines()
                 .map(|line| line.parse::<u32>().unwrap())
                 .sum::<u32>()
-        }).collect();
+        })
+        .collect();
     elves.sort();
     let top3: u32 = elves.iter().rev().take(3).sum();
     dbg!(top3);

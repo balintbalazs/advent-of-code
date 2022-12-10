@@ -39,7 +39,8 @@ impl Directory {
         let mut sizes: Vec<_> = self
             .directories
             .iter()
-            .map(|(_, directory)| directory.borrow().dir_sizes()).flatten()
+            .map(|(_, directory)| directory.borrow().dir_sizes())
+            .flatten()
             .collect();
         sizes.push(self.size());
         sizes
@@ -123,15 +124,24 @@ fn main() {
     let input = fs::read_to_string("inputs/day7.txt").expect("Failed to read file");
 
     let dir_tree = Directory::from_str(&input);
-    let sum_of_small_dirs: u32 = dir_tree.borrow().dir_sizes().into_iter().filter(|size| *size <= 100_000).sum();
+    let sum_of_small_dirs: u32 = dir_tree
+        .borrow()
+        .dir_sizes()
+        .into_iter()
+        .filter(|size| *size <= 100_000)
+        .sum();
     dbg!(sum_of_small_dirs);
 
     const MAX_ALLOWED_USAGE: u32 = 70_000_000 - 30_000_000;
     let total_usage = dir_tree.borrow().size();
     let min_dir_size = total_usage - MAX_ALLOWED_USAGE;
-    let dir_size_to_delete = dir_tree.borrow().dir_sizes().into_iter().filter(|size| *size >= min_dir_size).min();
+    let dir_size_to_delete = dir_tree
+        .borrow()
+        .dir_sizes()
+        .into_iter()
+        .filter(|size| *size >= min_dir_size)
+        .min();
     dbg!(dir_size_to_delete);
-
 }
 
 #[cfg(test)]

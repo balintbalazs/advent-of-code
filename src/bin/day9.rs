@@ -44,7 +44,7 @@ impl Step {
             };
             Self(x, y)
         } else {
-            Step(0,0)
+            Step(0, 0)
         }
     }
 }
@@ -77,32 +77,31 @@ fn count_tail_positions(input: &str) -> usize {
     visited.len()
 }
 
-
 fn count_nth_tail_positions(input: &str, n: usize) -> usize {
-  let mut visited = HashSet::new();
-  let start = Coord(0, 0);
-  let mut rope = vec![start; n+1];
-  visited.insert(start);
+    let mut visited = HashSet::new();
+    let start = Coord(0, 0);
+    let mut rope = vec![start; n + 1];
+    visited.insert(start);
 
-  for line in input.lines() {
-      let step = match &line[0..1] {
-          "R" => Step(1, 0),
-          "U" => Step(0, 1),
-          "L" => Step(-1, 0),
-          "D" => Step(0, -1),
-          _ => unimplemented!(),
-      };
-      let num = line[2..].parse().unwrap();
-      for _ in 0..num {
-          rope[0] = rope[0] + step;
-          for i in 1..=n {
-             let diff = rope[i-1] - rope[i];
-            rope[i] = rope[i] + diff.follow_step();
-          }
-          visited.insert(rope[n]);
-      }
-  }
-  visited.len()
+    for line in input.lines() {
+        let step = match &line[0..1] {
+            "R" => Step(1, 0),
+            "U" => Step(0, 1),
+            "L" => Step(-1, 0),
+            "D" => Step(0, -1),
+            _ => unimplemented!(),
+        };
+        let num = line[2..].parse().unwrap();
+        for _ in 0..num {
+            rope[0] = rope[0] + step;
+            for i in 1..=n {
+                let diff = rope[i - 1] - rope[i];
+                rope[i] = rope[i] + diff.follow_step();
+            }
+            visited.insert(rope[n]);
+        }
+    }
+    visited.len()
 }
 
 fn main() {
@@ -128,7 +127,7 @@ L 5
 R 2
 "###;
 
-const LONGER_TEST_DATA: &str = r###"R 5
+    const LONGER_TEST_DATA: &str = r###"R 5
 U 8
 L 8
 D 3

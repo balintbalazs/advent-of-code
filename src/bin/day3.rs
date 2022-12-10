@@ -1,4 +1,4 @@
-use std::{collections::{HashSet}, fs};
+use std::{collections::HashSet, fs};
 
 fn main() {
     // Read the input from the file

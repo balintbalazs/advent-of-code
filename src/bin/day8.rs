@@ -140,9 +140,7 @@ fn main() {
     let score = score
         .zip(view_to_right.iter().flatten())
         .map(|(a, b)| a * b);
-    let score = score
-        .zip(view_to_top.iter().flatten())
-        .map(|(a, b)| a * b);
+    let score = score.zip(view_to_top.iter().flatten()).map(|(a, b)| a * b);
     let score = score
         .zip(view_to_bottom.iter().flatten())
         .map(|(a, b)| a * b);

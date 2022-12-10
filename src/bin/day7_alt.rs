@@ -15,7 +15,8 @@ fn parse_input(input: &str) -> HashMap<Vec<String>, u32> {
                 "cd" => match tokens.next().unwrap() {
                     "/" => current_dir = root.clone(),
                     ".." => {
-                        if current_dir.len() > 1 { // don't go up if already in root
+                        if current_dir.len() > 1 {
+                            // don't go up if already in root
                             current_dir.pop();
                         }
                     }
