@@ -13,12 +13,12 @@ enum Part {
 }
 
 #[derive(Debug)]
-enum Operation {
+enum Operator {
     Add,
     Mul,
 }
 
-impl Operation {
+impl Operator {
     fn new(s: &str) -> Result<Self> {
         match s {
             "+" => Ok(Self::Add),
@@ -44,13 +44,13 @@ impl Operand {
 }
 
 #[derive(Debug)]
-struct Function {
+struct Operation {
     lhs: Operand,
     rhs: Operand,
-    operation: Operation,
+    operation: Operator,
 }
 
-impl Function {
+impl Operation {
     fn new(line: &str) -> Result<Self> {
         let line = line
             .trim()
@@ -62,20 +62,18 @@ impl Function {
             .ok_or_else(|| eyre!("lhs missing for operation"))?;
         let operation = tokens
             .next()
-            .ok_or_else(|| eyre!("lhs missing for operation"))?;
+            .ok_or_else(|| eyre!("operator missing for operation"))?;
         let rhs = tokens
             .next()
-            .ok_or_else(|| eyre!("lhs missing for operation"))?;
+            .ok_or_else(|| eyre!("rhs missing for operation"))?;
         Ok(Self {
             lhs: Operand::new(lhs)?,
             rhs: Operand::new(rhs)?,
-            operation: Operation::new(operation)?,
+            operation: Operator::new(operation)?,
         })
     }
 
     fn call(&self, item: u64) -> u64 {
-        // dbg!(&self);
-        // dbg!(&item);
         let lhs = match self.lhs {
             Operand::Old => item,
             Operand::Num(num) => num,
@@ -85,8 +83,8 @@ impl Function {
             Operand::Num(num) => num,
         };
         match self.operation {
-            Operation::Add => lhs + rhs,
-            Operation::Mul => lhs * rhs,
+            Operator::Add => lhs + rhs,
+            Operator::Mul => lhs * rhs,
         }
     }
 }
@@ -102,7 +100,7 @@ fn get_last_num_in_line(line: &str) -> Result<usize> {
 #[derive(Debug)]
 struct Monkey {
     items: Vec<u64>,
-    inspect_function: Function,
+    inspect_function: Operation,
     test_num: u64,
     true_target: usize,
     false_target: usize,
@@ -127,7 +125,7 @@ impl Monkey {
         let next_line = lines
             .next()
             .ok_or_else(|| eyre!("Missing operation for monkey"))?;
-        let inspect_function = Function::new(next_line)?;
+        let inspect_function = Operation::new(next_line)?;
 
         let next_line = lines
             .next()
@@ -289,7 +287,6 @@ Test: divisible by 17
 
         for _ in 0..20 {
             monkeys.round(Part1)?;
-            // dbg!((i,&monkeys));
         }
         assert_eq!(101, monkeys.monkeys[0].num_inspections);
 
