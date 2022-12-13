@@ -3,7 +3,7 @@ use std::{cmp::Ordering, fs};
 
 #[derive(Deserialize, Debug, PartialEq, Eq, Clone)]
 #[serde(untagged)]
-pub enum List {
+enum List {
     N(u32),
     L(Vec<List>),
 }
@@ -18,21 +18,17 @@ impl PartialOrd for List {
 
 impl Ord for List {
     fn cmp(&self, other: &Self) -> Ordering {
-        match self {
-            N(a) => match other {
-                N(b) => a.cmp(b),
-                L(_) => L(vec![N(*a)]).cmp(other),
-            },
-            L(a) => match other {
-                N(b) => self.cmp(&L(vec![N(*b)])),
-                L(b) => match (a.len(), b.len()) {
-                    (0, 0) => Ordering::Equal,
-                    (0, _) => Ordering::Less,
-                    (_, 0) => Ordering::Greater,
-                    (_, _) => match a[0].cmp(&b[0]) {
-                        Ordering::Equal => L(a[1..].to_vec()).cmp(&L(b[1..].to_vec())),
-                        ord => ord,
-                    },
+        match (self, other) {
+            (N(a), N(b)) => a.cmp(b),
+            (N(a), L(_)) => L(vec![N(*a)]).cmp(other),
+            (L(_), N(b)) => self.cmp(&L(vec![N(*b)])),
+            (L(a), L(b)) => match (a.len(), b.len()) {
+                (0, 0) => Ordering::Equal,
+                (0, _) => Ordering::Less,
+                (_, 0) => Ordering::Greater,
+                (_, _) => match a[0].cmp(&b[0]) {
+                    Ordering::Equal => L(a[1..].to_vec()).cmp(&L(b[1..].to_vec())),
+                    ord => ord,
                 },
             },
         }
