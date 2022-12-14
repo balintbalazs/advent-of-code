@@ -6,11 +6,10 @@ const SAND: char = '🟡';
 
 const SAND_INPUT: usize = 500;
 
+// returns the cave and the smallest used column index for printing
 fn from_string(input: &str) -> (Vec<Vec<char>>, usize) {
     let mut max_col = 0;
     let mut max_row = 0;
-
-    // let mut min_col = usize::MAX;
 
     let rock_paths: Vec<_> = input
         .lines()
@@ -22,9 +21,6 @@ fn from_string(input: &str) -> (Vec<Vec<char>>, usize) {
                     if col > max_col {
                         max_col = col;
                     }
-                    // if col < min_col {
-                    //     min_col = col;
-                    // }
                     let row = nums.next().unwrap().parse::<usize>().unwrap();
                     if row > max_row {
                         max_row = row;
@@ -111,15 +107,15 @@ fn main() {
     print_cave(&cave, min_col);
     println!();
     
-    
+    // we can just add the floor to the result of part 1 and continue the simulation
     let cave = add_floor(cave);
     let (cave, sands2) = simulate(cave);
     print_cave(&cave, min_col);
     println!();
     
     dbg!(sands);
+    // don't forget to add the sands from part 1
     dbg!(sands + sands2);
-
 }
 
 #[cfg(test)]
