@@ -106,13 +106,13 @@ fn main() {
     let (cave, sands) = simulate(cave);
     print_cave(&cave, min_col);
     println!();
-    
+
     // we can just add the floor to the result of part 1 and continue the simulation
     let cave = add_floor(cave);
     let (cave, sands2) = simulate(cave);
     print_cave(&cave, min_col);
     println!();
-    
+
     dbg!(sands);
     // don't forget to add the sands from part 1
     dbg!(sands + sands2);
