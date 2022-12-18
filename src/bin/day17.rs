@@ -44,7 +44,7 @@ fn drop_rocks(jet_pattern: &str, num_rocks: usize) -> usize {
         let rock = &rocks[r % rocks.len()];
         let mut bottom = total_height + 3;
         let mut left = 2;
-        for row in total_height..bottom+rock.len() {
+        for row in total_height..bottom + rock.len() {
             well[row % HEIGHT] = vec!['.'; WIDTH];
         }
 

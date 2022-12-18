@@ -7,13 +7,13 @@ use std::{
 
 #[derive(Debug)]
 struct File {
-    pub name: String,
+    pub _name: String,
     pub size: u32,
 }
 
 impl File {
-    fn new(name: String, size: u32) -> Self {
-        Self { name, size }
+    fn new(_name: String, size: u32) -> Self {
+        Self { _name, size }
     }
 }
 

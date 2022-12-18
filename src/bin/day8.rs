@@ -149,7 +149,7 @@ fn main() {
     dbg!(max_score);
 }
 
-const TEST_INPUT: &str = r###"
+const _TEST_INPUT: &str = r###"
 30373
 25512
 65332
