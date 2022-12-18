@@ -63,13 +63,13 @@ fn part1(mut graph: HashMap<String, Valve>, starting: &str, mut remaining_time: 
         current_valve.flow_rate = 0;
     }
 
-    let mut closed_valves: Vec<_> = graph
+    let closed_valves: Vec<_> = graph
         .iter()
         .filter(|(_, v)| v.flow_rate > 0)
         .map(|(k, _)| k)
         .collect();
     if closed_valves.len() == 0 {
-        // println!("No more open valves");
+        println!("No more open valves");
         return released_pressure;
     }
 
@@ -113,6 +113,119 @@ fn part1(mut graph: HashMap<String, Valve>, starting: &str, mut remaining_time: 
     released_pressure + more_pressure
 }
 
+fn part2(mut graph: HashMap<String, Valve>, me: (&str, u32), elephant: (&str, u32)) -> u32 {
+    // dbg!(me);
+    // dbg!(elephant);
+    let mut released_pressure = 0;
+
+    let mut remaining_time_me = me.1;
+
+    let current_valve_me = graph.get_mut(me.0).unwrap();
+    if current_valve_me.flow_rate != 0 && remaining_time_me != 0 {
+        remaining_time_me -= 1;
+        released_pressure += remaining_time_me * current_valve_me.flow_rate;
+        current_valve_me.flow_rate = 0;
+    }
+
+    let mut remaining_time_el = elephant.1;
+
+    let current_valve_el = graph.get_mut(elephant.0).unwrap();
+    if current_valve_el.flow_rate != 0 && remaining_time_el != 0 {
+        remaining_time_el -= 1;
+        released_pressure += remaining_time_el * current_valve_el.flow_rate;
+        current_valve_el.flow_rate = 0;
+    }
+
+    let closed_valves: Vec<_> = graph
+        .iter()
+        .filter(|(_, v)| v.flow_rate > 0)
+        .map(|(k, _)| k)
+        .collect();
+    if closed_valves.len() == 0 {
+        // println!("No more open valves");
+        return released_pressure;
+    }
+
+    let mut distances_me = HashMap::new();
+    let mut next_valves = VecDeque::<(String, u32)>::new();
+    next_valves.push_back((me.0.to_string(), 0));
+
+    while let Some((valve, time_to_open)) = next_valves.pop_front() {
+        if time_to_open >= remaining_time_me {
+            break;
+        }
+        if !distances_me.contains_key(&valve) {
+            distances_me.insert(valve.clone(), time_to_open);
+            let time_to_open = time_to_open + 1;
+
+            for neighbor in &graph.get(&valve).unwrap().leads_to {
+                next_valves.push_back((neighbor.to_owned(), time_to_open));
+            }
+        }
+    }
+
+    let mut distances_el = HashMap::new();
+    let mut next_valves = VecDeque::<(String, u32)>::new();
+    next_valves.push_back((elephant.0.to_string(), 0));
+
+    while let Some((valve, time_to_open)) = next_valves.pop_front() {
+        if time_to_open >= remaining_time_el {
+            break;
+        }
+        if !distances_el.contains_key(&valve) {
+            distances_el.insert(valve.clone(), time_to_open);
+            let time_to_open = time_to_open + 1;
+
+            for neighbor in &graph.get(&valve).unwrap().leads_to {
+                next_valves.push_back((neighbor.to_owned(), time_to_open));
+            }
+        }
+    }
+
+    let mut max_additional_pressure = 0;
+    for valve_me in &closed_valves {
+        if me.0 == "AA" {
+            dbg!(valve_me);
+        }
+        for valve_el in &closed_valves {
+            if valve_el == valve_me {
+                continue;
+            }
+            let p = match (distances_me.get(*valve_me), distances_el.get(*valve_el)) {
+                (Some(distance_me), Some(distance_el)) => {
+                    if let Some(swap_distance) = distances_me.get(*valve_el) {
+                        if swap_distance < distance_me {
+                            continue;
+                        }
+                    }
+                    part2(
+                        graph.clone(),
+                        (valve_me, remaining_time_me - distance_me),
+                        (valve_el, remaining_time_el - distance_el),
+                    )
+                }
+                (None, Some(distance_el)) => part2(
+                    graph.clone(),
+                    me,
+                    (valve_el, remaining_time_el - distance_el),
+                ),
+                (Some(distance_me), None) => part2(
+                    graph.clone(),
+                    (valve_me, remaining_time_me - distance_me),
+                    elephant,
+                ),
+                (None, None) => 0,
+            };
+            if p > max_additional_pressure {
+                max_additional_pressure = p;
+            }
+        }
+    }
+    // dbg!(max_additional_pressure);
+
+    released_pressure + max_additional_pressure
+}
+
 fn main() {
     // Read the input from the file
     let input = fs::read_to_string("inputs/day16.txt").expect("Failed to read file");
@@ -120,7 +233,8 @@ fn main() {
     let graph = create_graph(&input);
     // dbg!(graph);
 
-    dbg!(part1(graph, "AA", 30));
+    dbg!(part1(graph.clone(), "AA", 30));
+    dbg!(part2(graph, ("AA", 26), ("AA", 26)));
 }
 
 #[cfg(test)]
@@ -144,5 +258,12 @@ Valve JJ has flow rate=21; tunnel leads to valve II";
         let graph = create_graph(TEST_DATA);
 
         assert_eq!(1651, part1(graph, "AA", 30));
+    }
+
+    #[test]
+    fn test_part2() {
+        let graph = create_graph(TEST_DATA);
+
+        dbg!(part2(graph, ("AA", 26), ("AA", 26)));
     }
 }
