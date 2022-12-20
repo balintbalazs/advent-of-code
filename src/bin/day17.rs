@@ -1,4 +1,7 @@
-use std::fs;
+use std::{
+    collections::{HashMap, HashSet},
+    fs,
+};
 
 fn rocks() -> Vec<Vec<String>> {
     vec![
@@ -32,14 +35,17 @@ fn drop_rocks(jet_pattern: &str, num_rocks: usize) -> usize {
     let mut total_height = 0;
     let rocks = rocks();
     const WIDTH: usize = 7;
-    const HEIGHT: usize = 1_000;
+    const HEIGHT: usize = 100;
     // worst case - 2022 vertical bars stacked on top of each other
     let mut i = 0;
     let mut well = vec![vec!['.'; WIDTH]; HEIGHT];
-    for r in 0..num_rocks {
-        if r % 5 == 0 && i == 0 {
-            println!("All repeats after {i} ticks, and rock {r}");
-        }
+
+    let mut previous_total_heights = vec![];
+    let mut seen_combo = HashMap::new();
+    let mut cycle_length = None;
+    let mut cycle_start = None;
+    // let mut found = false;
+    for r in 0.. {
         // spawn
         let rock = &rocks[r % rocks.len()];
         let mut bottom = total_height + 3;
@@ -83,6 +89,7 @@ fn drop_rocks(jet_pattern: &str, num_rocks: usize) -> usize {
                     }
                 }
                 total_height = total_height.max(bottom + rock.len());
+                previous_total_heights.push(total_height);
 
                 // println!();
                 // for row in (0..total_height+5).rev() {
@@ -91,17 +98,72 @@ fn drop_rocks(jet_pattern: &str, num_rocks: usize) -> usize {
                 //     }
                 //     println!();
                 // }
+
                 break;
             }
         }
+
+        // if r % 35 == 15 {
+        //     print!("*");
+        // } else {
+        //     print!(" ");
+        // }
+        // println!(" Rock num {r:>3}, type {rr},  push {i:>2}, total height {total_height:>5}");
+        // if !found {
+        match cycle_start {
+            Some(cycle_start) => {
+                let cycle_length = cycle_length.unwrap();
+                // dbg!(r);
+                // dbg!(cycle_start);
+                if r == cycle_start + cycle_length {
+                    // let prev_r = r - cycle_length;
+                    let base_height = previous_total_heights[cycle_start];
+                    let cycle_height = previous_total_heights[r] - base_height;
+                    let full_cycles = (num_rocks - cycle_start) / cycle_length;
+                    let last_cycle_index = (num_rocks - cycle_start) % cycle_length;
+                    let last_cycle_height =
+                        previous_total_heights[cycle_start + last_cycle_index - 1] - base_height;
+
+                    dbg!(base_height);
+                    dbg!(cycle_height);
+                    dbg!(full_cycles);
+                    dbg!(last_cycle_height);
+
+                    let result = base_height + cycle_height * full_cycles + last_cycle_height;
+                    return result;
+                }
+            }
+            None => {
+                let rr = r % 5;
+                if let Some(prev_r) = seen_combo.get(&(rr, i)) {
+                    // println!("Repeats!");
+                    // dbg!(prev_r);
+                    // dbg!(r);
+                    // dbg!(rr);
+                    // dbg!(i);
+
+                    cycle_start = Some(r);
+                    cycle_length = Some(r - prev_r);
+                } else {
+                    seen_combo.insert((rr, i), r);
+                }
+            }
+        }
+
+        // break;
+        // dbg!(result);
+        // found = true;
+
+        // }
     }
-    total_height
+    unreachable!()
 }
 
 fn main() {
     // Read the input from the file
     let input = fs::read_to_string("inputs/day17.txt").expect("Failed to read file");
     dbg!(drop_rocks(&input, 2022));
+    dbg!(drop_rocks(&input, 1_000_000_000_000));
 }
 
 #[cfg(test)]
@@ -118,6 +180,6 @@ mod tests {
 
     #[test]
     fn test_part2() {
-        dbg!(drop_rocks(TEST_DATA, 1_000_000_000));
+        assert_eq!(1514285714288, drop_rocks(TEST_DATA, 1_000_000_000_000));
     }
 }
