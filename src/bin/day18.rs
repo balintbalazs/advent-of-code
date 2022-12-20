@@ -58,7 +58,7 @@ fn calculate_surface(input: &str, part: Part) -> usize {
     let min = (min_x, min_y, min_z);
 
     // do a flood fill of outside volume, starting from `min`
-    // hint in task description: 
+    // hint in task description:
     // > The steam will expand to reach as much as possible, completely displacing any air on
     // > the outside of the lava droplet but never expanding diagonally.
     //
