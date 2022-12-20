@@ -40,6 +40,30 @@ fn create_graph(input: &str) -> HashMap<String, Valve> {
         let (name, valve) = from_str(line);
         graph.insert(name, valve);
     }
+
+    let closed_valves: Vec<_> = graph
+        .iter()
+        .filter(|(_, v)| v.flow_rate > 0)
+        .map(|(k, _)| k)
+        .collect();
+    let starting = "AA";
+
+    // find distances to all valves
+    let mut distances = HashMap::new();
+    let mut next_valves = VecDeque::<(String, u32)>::new();
+    next_valves.push_back((starting.to_string(), 0));
+
+    while let Some((valve, time_to_open)) = next_valves.pop_front() {
+        if !distances.contains_key(&valve) {
+            distances.insert(valve.clone(), time_to_open);
+            let time_to_open = time_to_open + 1;
+
+            for neighbor in &graph.get(&valve).unwrap().leads_to {
+                next_valves.push_back((neighbor.to_owned(), time_to_open));
+            }
+        }
+    }
+
     graph
 }
 
@@ -69,7 +93,7 @@ fn part1(mut graph: HashMap<String, Valve>, starting: &str, mut remaining_time: 
         .map(|(k, _)| k)
         .collect();
     if closed_valves.len() == 0 {
-        println!("No more open valves");
+        // println!("No more open valves");
         return released_pressure;
     }
 
