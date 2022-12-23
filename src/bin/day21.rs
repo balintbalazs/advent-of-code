@@ -1,4 +1,7 @@
-use std::{collections::HashMap, fs};
+use std::{
+    collections::{vec_deque, HashMap, VecDeque},
+    fs,
+};
 
 #[derive(Debug)]
 enum Operator {
@@ -40,7 +43,7 @@ impl Monkeys {
                     "-" => Operator::Sub,
                     "*" => Operator::Mul,
                     "/" => Operator::Div,
-                    op => unreachable!("invalid operator {op}"),
+                    op => panic!("invalid operator {op}"),
                 };
                 let rhs = words.next().unwrap().to_string();
                 MonkeyJob::Calculate(Operation { lhs, rhs, operator })
@@ -52,11 +55,11 @@ impl Monkeys {
         Self(monkeys)
     }
 
-    fn shout(&mut self, id: &str) -> i64 {
-        let monkey_job = self.0.remove(id).unwrap();
+    fn shout(&self, id: &str) -> i64 {
+        let monkey_job = self.0.get(id).unwrap();
 
         let num = match monkey_job {
-            MonkeyJob::Shout(num) => num,
+            MonkeyJob::Shout(num) => *num,
             MonkeyJob::Calculate(op) => {
                 let lhs = self.shout(&op.lhs);
                 let rhs = self.shout(&op.rhs);
@@ -69,33 +72,87 @@ impl Monkeys {
             }
         };
 
-        let monkey_job = MonkeyJob::Shout(num);
-        self.0.insert(id.to_string(), monkey_job);
-
         num
     }
 
-    fn find_humn(&mut self, id: &str) -> i64 {
-        let monkey_job = self.0.remove(id).unwrap();
+    fn path_to_humn(&self, id: &str) -> Option<VecDeque<String>> {
+        if id == "humn" {
+            return Some([id.to_string()].into_iter().collect());
+        };
+        let monkey_job = self.0.get(id).unwrap();
 
-        let num = match &monkey_job {
-            MonkeyJob::Shout(num) => *num,
+        match &monkey_job {
+            MonkeyJob::Shout(_) => None,
             MonkeyJob::Calculate(op) => {
-                let lhs = self.find_humn(&op.lhs);
-                let rhs = self.find_humn(&op.rhs);
-                match op.operator {
-                    Operator::Add => lhs + rhs,
-                    Operator::Sub => lhs - rhs,
-                    Operator::Mul => lhs * rhs,
-                    Operator::Div => lhs / rhs,
+                if let Some(mut path) = self.path_to_humn(&op.lhs) {
+                    path.push_front(id.to_string());
+                    Some(path)
+                } else if let Some(mut path) = self.path_to_humn(&op.rhs) {
+                    path.push_front(id.to_string());
+                    Some(path)
+                } else {
+                    None
                 }
             }
+        }
+    }
+
+    fn solve_for_humn(&self, mut path_to_humn: VecDeque<String>, target: i64) -> i64 {
+        let current_node = path_to_humn.pop_front().unwrap();
+        if current_node == "humn" {
+            println!("humn should be: {}", target);
+            return target;
+        }
+
+        let current_node = self.0.get(&current_node).unwrap();
+        let op = match current_node {
+            MonkeyJob::Shout(_) => {
+                panic!("All non-humn nodes in path should have an operation instead of a number")
+            }
+            MonkeyJob::Calculate(op) => op,
         };
+        if op.lhs == path_to_humn[0] {
+            // lhs op rhs = target
+            let rhs = self.shout(&op.rhs);
+            let lhs = match op.operator {
+                Operator::Add => target - rhs,
+                Operator::Sub => target + rhs,
+                Operator::Mul => target / rhs,
+                Operator::Div => target * rhs,
+            };
+            self.solve_for_humn(path_to_humn, lhs)
+        } else if op.rhs == path_to_humn[0] {
+            let lhs = self.shout(&op.lhs);
+            let rhs = match op.operator {
+                Operator::Add => target - lhs,
+                Operator::Sub => lhs - target,
+                Operator::Mul => target / lhs,
+                Operator::Div => lhs / target,
+            };
+            self.solve_for_humn(path_to_humn, rhs)
+        } else {
+            panic!("no path to human from root");
+        }
+    }
+}
 
-        // let new_job = MonkeyJob::Shout(num);
-        self.0.insert(id.to_string(), monkey_job);
+fn part2(monkeys: &mut Monkeys) -> i64 {
+    let mut path_to_humn = monkeys.path_to_humn("root").unwrap();
+    path_to_humn.pop_front(); //remove root
 
-        todo!();
+    let root = monkeys.0.get("root").unwrap();
+    let op = match root {
+        MonkeyJob::Shout(_) => panic!("Root should have something to calculate"),
+        MonkeyJob::Calculate(op) => op,
+    };
+    if op.lhs == path_to_humn[0] {
+        let target = monkeys.shout(&op.rhs);
+        monkeys.solve_for_humn(path_to_humn, target)
+    } else if op.rhs == path_to_humn[0] {
+        let target = monkeys.shout(&op.lhs);
+        monkeys.solve_for_humn(path_to_humn, target)
+    } else {
+        panic!("no path to human from root");
     }
 }
 
@@ -104,6 +161,7 @@ fn main() {
     let input = fs::read_to_string("inputs/day21.txt").expect("Failed to read file");
     let mut monkeys = Monkeys::from_str(&input);
     dbg!(monkeys.shout("root"));
+    part2(&mut monkeys);
 }
 
 #[cfg(test)]
@@ -130,6 +188,12 @@ hmdt: 32";
     #[test]
     fn test_part1() {
         let mut monkeys = Monkeys::from_str(TEST_DATA);
-        dbg!(monkeys.shout("root"));
+        assert_eq!(152, monkeys.shout("root"));
+    }
+
+    #[test]
+    fn test_part2() {
+        let mut monkeys = Monkeys::from_str(TEST_DATA);
+        assert_eq!(301, part2(&mut monkeys));
     }
 }
