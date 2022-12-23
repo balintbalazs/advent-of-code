@@ -161,7 +161,7 @@ fn main() {
     let input = fs::read_to_string("inputs/day21.txt").expect("Failed to read file");
     let mut monkeys = Monkeys::from_str(&input);
     dbg!(monkeys.shout("root"));
-    part2(&mut monkeys);
+    dbg!(part2(&mut monkeys));
 }
 
 #[cfg(test)]
