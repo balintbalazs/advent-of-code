@@ -2,7 +2,8 @@ use std::{
     fmt::Debug,
     fs,
     iter::Sum,
-    ops::{Add, Index}, str::FromStr,
+    ops::{Add, Index},
+    str::FromStr,
 };
 
 #[derive(Clone, PartialEq, Eq)]
@@ -10,7 +11,7 @@ struct Snafu(Vec<i32>);
 
 #[derive(Debug, PartialEq, Eq)]
 enum ParseSnafuError {
-    InvalidDigit(char)
+    InvalidDigit(char),
 }
 
 impl FromStr for Snafu {
@@ -78,7 +79,7 @@ impl Add for Snafu {
             while sum > 2 {
                 carry += 1;
                 sum -= 5;
-            } 
+            }
             while sum < -2 {
                 carry -= 1;
                 sum += 5;
@@ -108,7 +109,7 @@ fn main() {
     let nums: Result<Vec<_>, _> = input.lines().map(Snafu::from_str).collect();
     let nums = nums.unwrap();
     let part1: Snafu = nums.into_iter().sum();
-    dbg!(part1); 
+    dbg!(part1);
 }
 
 #[cfg(test)]
@@ -139,5 +140,4 @@ mod tests {
         dbg!(&sum);
         assert_eq!("2=-1=0".parse::<Snafu>().unwrap(), sum);
     }
-    
 }
