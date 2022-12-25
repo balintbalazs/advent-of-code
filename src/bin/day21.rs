@@ -1,5 +1,5 @@
 use std::{
-    collections::{vec_deque, HashMap, VecDeque},
+    collections::{HashMap, VecDeque},
     fs,
 };
 
@@ -187,7 +187,7 @@ hmdt: 32";
 
     #[test]
     fn test_part1() {
-        let mut monkeys = Monkeys::from_str(TEST_DATA);
+        let monkeys = Monkeys::from_str(TEST_DATA);
         assert_eq!(152, monkeys.shout("root"));
     }
 
