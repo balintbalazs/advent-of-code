@@ -55,7 +55,7 @@ impl Map {
     fn from_str(input: &str) -> Self {
         let lines: Vec<_> = input.lines().collect();
         let height = lines.len();
-        let width = lines[0].len();
+        let width = lines.iter().map(|l| l.len()).max().unwrap();
         let starting_col = lines[0].chars().position(|ch| ch == '.').unwrap() + 1;
 
         let mut col_limits = vec![(0, 0)];
@@ -101,6 +101,9 @@ impl Map {
                 }
                 if c == line_len {
                     for i in (c + 1)..=width {
+                        // if row_limits[i].0.is_none() {
+                        row_limits[i].0 = Some(r + 1);
+                        // }
                         if row_limits[i].1.is_none() {
                             row_limits[i].1 = Some(r - 1);
                         }
@@ -269,20 +272,20 @@ mod tests {
 
     use super::*;
 
-    const TEST_DATA: &str = "        ....    
-        .#..    
-        #...    
-        ....    
-...#........    
-........#...    
-..#....#.#.#    
-..........#.    
-        ........
+    const TEST_DATA: &str = "        ...#
+        .#..
+        #...
+        ....
+...#.......#
+........#...
+..#....#....
+..........#.
+        ...#....
         .....#..
         .#......
         ......#.
 
-LL1LL1";
+10R5L5R10L4R5L5";
 
     #[test]
     fn test_part1() {
