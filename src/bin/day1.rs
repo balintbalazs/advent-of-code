@@ -12,6 +12,54 @@ fn main() {
         left * 10 + right
     }).sum();
     dbg!(part1);
+
+    let numbers = vec!["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
+
+    let part2: u32 = lines.map(|l| {
+        let mut l = l.to_string();
+        for (index, number) in numbers.iter().enumerate() {
+            l = l.replace((index as u8 + '0' as u8) as char, number);
+        }
+        let mut r = l.clone();
+        let left = loop {
+            let n = match l {
+                line if line.starts_with("one") => 1,
+                line if line.starts_with("two") => 2,
+                line if line.starts_with("three") => 3,
+                line if line.starts_with("four") => 4,
+                line if line.starts_with("five") => 5,
+                line if line.starts_with("six") => 6,
+                line if line.starts_with("seven") => 7,
+                line if line.starts_with("eight") => 8,
+                line if line.starts_with("nine") => 9,
+                _ => {
+                    l.remove(0);
+                    continue;
+                }
+            };
+            break n;
+        };
+        let right = loop {
+            let n = match r {
+                line if line.ends_with("one") => 1,
+                line if line.ends_with("two") => 2,
+                line if line.ends_with("three") => 3,
+                line if line.ends_with("four") => 4,
+                line if line.ends_with("five") => 5,
+                line if line.ends_with("six") => 6,
+                line if line.ends_with("seven") => 7,
+                line if line.ends_with("eight") => 8,
+                line if line.ends_with("nine") => 9,
+                _ => {
+                    r.pop();
+                    continue;
+                }
+            };
+            break n;
+        };
+        left * 10 + right
+    }).sum();
+    dbg!(part2);
 }
 
 fn is_digit(c: &char) -> bool {
