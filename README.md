@@ -1,6 +1,6 @@
-# Advent of Code 2022
+# Advent of Code 2023
 
-This repository contains some Rust solutions for the [2022 Advent of Code](https://adventofcode.com/2022) challenge.
+This repository contains some Rust solutions for the [2023 Advent of Code](https://adventofcode.com/2023) challenge.
 
 Each day's task is in a separate binary. To run them, use
 
