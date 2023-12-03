@@ -1,4 +1,4 @@
-use std::fs;
+use std::{fs, collections::HashMap};
 
 fn main() {
     // Read the input from the file
@@ -10,6 +10,7 @@ fn main() {
         .collect::<Vec<_>>();
 
     let mut part_numbers = vec![];
+    let mut gears = HashMap::<(usize, usize), Vec<u32>>::new();
 
     'next_line: for (row, line) in input.iter().enumerate() {
         let mut col1 = 0;
@@ -39,6 +40,13 @@ fn main() {
             'outer: for i in start_row..end_row {
                 for j in start_col..end_col {
                     if !input[i][j].is_numeric() && input[i][j] != '.' {
+                        if input[i][j] == '*' {
+                            if let Some(parts) = gears.get_mut(&(i,j)) {
+                                parts.push(n);
+                            } else {
+                                gears.insert((i, j), vec![n]);
+                            }
+                        }
                         // println!("found {n} in row {row} col {col1}");
                         part_numbers.push(n);
                         break 'outer;
@@ -52,4 +60,7 @@ fn main() {
 
     let part1: u32 = part_numbers.iter().sum();
     dbg!(part1);
+
+    let part2: u32 = gears.into_values().filter(|g| g.len() == 2).map(|g| g.into_iter().product::<u32>()).sum();
+    dbg!(part2);
 }
