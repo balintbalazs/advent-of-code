@@ -1,5 +1,4 @@
-use core::{num, panic};
-use std::{fs, process::id};
+use std::fs;
 
 fn main() {
     // Read the input from the file
@@ -32,12 +31,12 @@ fn main() {
                         if number > 13 {
                             continue 'outer;
                         }
-                    },
+                    }
                     "blue" => {
                         if number > 14 {
                             continue 'outer;
                         }
-                    },
+                    }
                     a => panic!("unknown color: {a}"),
                 }
             }
@@ -48,7 +47,6 @@ fn main() {
     let part1: u32 = ids_of_possible_games.iter().sum();
     dbg!(part1);
 
-    
     let mut powers = vec![];
     for line in lines {
         // id is the same as index + 1
@@ -76,17 +74,17 @@ fn main() {
                         if number > green {
                             green = number;
                         }
-                    },
+                    }
                     "blue" => {
                         if number > blue {
                             blue = number;
                         }
-                    },
+                    }
                     a => panic!("unknown color: {a}"),
                 }
             }
         }
-        powers.push(red * green * blue);        
+        powers.push(red * green * blue);
     }
     let part2: u32 = powers.iter().sum();
     dbg!(part2);
