@@ -1,4 +1,4 @@
-use std::{fs, collections::HashMap};
+use std::{collections::HashMap, fs};
 
 fn main() {
     // Read the input from the file
@@ -41,7 +41,7 @@ fn main() {
                 for j in start_col..end_col {
                     if !input[i][j].is_numeric() && input[i][j] != '.' {
                         if input[i][j] == '*' {
-                            if let Some(parts) = gears.get_mut(&(i,j)) {
+                            if let Some(parts) = gears.get_mut(&(i, j)) {
                                 parts.push(n);
                             } else {
                                 gears.insert((i, j), vec![n]);
@@ -61,6 +61,10 @@ fn main() {
     let part1: u32 = part_numbers.iter().sum();
     dbg!(part1);
 
-    let part2: u32 = gears.into_values().filter(|g| g.len() == 2).map(|g| g.into_iter().product::<u32>()).sum();
+    let part2: u32 = gears
+        .into_values()
+        .filter(|g| g.len() == 2)
+        .map(|g| g.into_iter().product::<u32>())
+        .sum();
     dbg!(part2);
 }
