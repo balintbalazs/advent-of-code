@@ -1,3 +1,4 @@
+use rayon::prelude::*;
 use std::{fs, num::ParseIntError, str::FromStr};
 
 #[derive(Debug, PartialEq)]
@@ -110,18 +111,24 @@ impl Almanac {
     }
 
     fn part2(&self) -> u128 {
-        self.seeds.chunks(2).map(|c| {
-            match c {
-                [start, length] => (*start..(*start + *length)).map(|seed| {
-                    let mut id = seed;
-                    for map in &self.maps {
-                        id = map.apply(id);
-                    }
-                    id
-                }).min().unwrap(),
+        self.seeds
+            .chunks(2)
+            .map(|c| match c {
+                [start, length] => (*start..(*start + *length))
+                    .into_par_iter()
+                    .map(|seed| {
+                        let mut id = seed;
+                        for map in &self.maps {
+                            id = map.apply(id);
+                        }
+                        id
+                    })
+                    .min()
+                    .unwrap(),
                 _ => panic!("can't deal with this"),
-            }
-        }).min().unwrap()
+            })
+            .min()
+            .unwrap()
     }
 }
 
