@@ -48,7 +48,6 @@ impl Hand {
         for card in cards.clone() {
             counts[card.0 as usize] += 1;
         }
-        // let counts = counts;
         let jokers = counts[1];
         counts[1] = 0;
         counts.sort();
@@ -113,6 +112,7 @@ fn main() {
     dbg!(part2);
 }
 
+#[cfg(test)]
 mod test {
     use super::*;
 

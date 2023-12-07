@@ -109,6 +109,7 @@ fn main() {
     dbg!(part1);
 }
 
+#[cfg(test)]
 mod test {
     use super::*;
 
