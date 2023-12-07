@@ -106,9 +106,11 @@ fn main() {
     let lines = input.lines();
     let mut plays: Vec<Play> = lines.map(Play::from_str).collect();
     plays.sort();
-    let part2: u32 = plays.iter().enumerate().map(|(i, play)| {
-        play.bid * (i as u32 + 1)
-    }).sum();
+    let part2: u32 = plays
+        .iter()
+        .enumerate()
+        .map(|(i, play)| play.bid * (i as u32 + 1))
+        .sum();
     dbg!(part2);
 }
 
