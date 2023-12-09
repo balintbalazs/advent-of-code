@@ -3,7 +3,7 @@ use std::fs;
 fn next_in_sequence(seq: &Vec<i64>) -> i64 {
     let mut diffs = Vec::new();
     for i in 1..seq.len() {
-        diffs.push(seq[i] - seq[i-1]);
+        diffs.push(seq[i] - seq[i - 1]);
     }
     let next_diff = if diffs.iter().all(|d| *d == 0) {
         0
@@ -11,21 +11,21 @@ fn next_in_sequence(seq: &Vec<i64>) -> i64 {
         next_in_sequence(&diffs)
     };
 
-    seq[seq.len()-1] + next_diff
+    seq[seq.len() - 1] + next_diff
 }
 
 fn prev_in_sequence(seq: &Vec<i64>) -> i64 {
     let mut diffs = Vec::new();
     for i in 1..seq.len() {
-        diffs.push(seq[i] - seq[i-1]);
+        diffs.push(seq[i] - seq[i - 1]);
     }
-    let next_diff = if diffs.iter().all(|d| *d == 0) {
+    let prev_diff = if diffs.iter().all(|d| *d == 0) {
         0
     } else {
         prev_in_sequence(&diffs)
     };
 
-    seq[0] - next_diff
+    seq[0] - prev_diff
 }
 
 fn main() {
@@ -36,15 +36,16 @@ fn main() {
         nums
     });
 
-    let part1 = sequences.clone().map(|sequence| {
-        next_in_sequence(&sequence)
-    }).sum::<i64>();
+    let part1 = sequences
+        .clone()
+        .map(|sequence| next_in_sequence(&sequence))
+        .sum::<i64>();
 
     dbg!(part1);
 
-    let part2 = sequences.map(|sequence| {
-        prev_in_sequence(&sequence)
-    }).sum::<i64>();
+    let part2 = sequences
+        .map(|sequence| prev_in_sequence(&sequence))
+        .sum::<i64>();
 
     dbg!(part2);
 }
