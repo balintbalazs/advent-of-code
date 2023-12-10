@@ -66,7 +66,7 @@ fn main() {
     let mut part1 = 1;
 
     while starts[0] != starts[1] {
-        for (i, (d, l)) in dirs.iter_mut().zip(starts.iter_mut()).enumerate() {
+        for (d, l) in dirs.iter_mut().zip(starts.iter_mut()) {
             *d = match d {
                 Up => match tiles[l.0][l.1] {
                     'F' => Right,
@@ -106,7 +106,7 @@ fn main() {
 
     dbg!(part1);
 
-    // replace starting tile with matching pipe
+    // replace starting tile with matching pipe to close loop
     tiles[start.0][start.1] = match starting_dirs {
         [Up, Down] | [Down, Up] => '|',
         [Left, Right] | [Right, Left] => '-',
@@ -145,7 +145,7 @@ fn main() {
         }
     }
 
-    // now in upscaled maze to flood fill from (0,0)
+    // now in upscaled maze do flood fill from (0,0)
     // label outside tiles with 'o'
     // assume (0,0) is outside
     let mut q = VecDeque::new();
@@ -173,9 +173,11 @@ fn main() {
     // tile is on the inside if all 9 sub-tiles are empty '.' or walls 'x'
     let mut part2 = 0;
 
+    // loop through all tiles
     for r in 0..height {
-        'tiles: for c in 0..width {
+        for c in 0..width {
             let mut count = 0;
+            // loop through sub-tiles
             for rr in 0..3 {
                 for cc in 0..3 {
                     let m = maze[3 * r + rr][3 * c + cc];
