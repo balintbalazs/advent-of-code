@@ -26,10 +26,7 @@ fn find_symmetry(
     }
 }
 
-fn find_horizontal_symmetry(
-    pattern: &Vec<Vec<char>>,
-    orig_symm: Option<usize>,
-) -> Option<usize> {
+fn find_horizontal_symmetry(pattern: &Vec<Vec<char>>, orig_symm: Option<usize>) -> Option<usize> {
     'outer: for r in 0..(pattern.len() - 1) {
         // dbg!(r);
         let mut rt = r + 1;
