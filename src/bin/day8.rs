@@ -58,7 +58,7 @@ fn main() {
                 };
                 if current.ends_with('Z') {
                     // dbg!(&current, i);
-                    if let Some(first_z) = first_z {
+                    if let Some(_first_z) = first_z {
                         // dbg!(&first_z);
                         // dbg!((current, i));
                         period = i - offset;
