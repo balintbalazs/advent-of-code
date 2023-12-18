@@ -123,7 +123,7 @@ fn main() {
         cycle(&mut grid);
         let load = total_load(&grid);
         // dbg!(count);
-        // dbg!(load);        
+        // dbg!(load);
         if let Some(first_rep) = grids.get(&grid) {
             break (*first_rep, count - first_rep);
         };

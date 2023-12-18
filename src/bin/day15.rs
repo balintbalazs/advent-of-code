@@ -70,10 +70,16 @@ fn main() {
         }
     }
     // dbg!(&boxes);
-    let part2: usize = boxes.iter().enumerate().map(|(bi, bx)| {
-        bx.lenses.iter().enumerate().map(|(li, lens)| {
-           (bi + 1) * (li + 1) * lens.focal_length
-        }).sum::<usize>()
-    }).sum();
+    let part2: usize = boxes
+        .iter()
+        .enumerate()
+        .map(|(bi, bx)| {
+            bx.lenses
+                .iter()
+                .enumerate()
+                .map(|(li, lens)| (bi + 1) * (li + 1) * lens.focal_length)
+                .sum::<usize>()
+        })
+        .sum();
     dbg!(part2);
 }
