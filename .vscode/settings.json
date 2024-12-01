@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "*.cu": "cpp",
+        "*.cui": "cpp",
+        "*.fio": "ini",
+        "stdio.h": "c",
+        "vec.h": "c"
+    }
+}
