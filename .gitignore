@@ -1,6 +1,7 @@
 /target
 /inputs
 *.out
+c/build
 
 # ignore everything in the c folder
 # except for files with .c and .h extension
