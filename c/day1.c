@@ -29,27 +29,45 @@ int main()
       push_vec(&vec_left, left);
       push_vec(&vec_right, right);
    }
-
    // Close the file
    fclose(fptr);
-
 
    sort_vec(&vec_left);
    sort_vec(&vec_right);
 
-   int sum = 0;
+   int part1 = 0;
    // Print vec_left
    for (size_t i = 0; i < (vec_left.size); i++)
    {
-      vec_left.head[i] = abs((vec_left.head[i] - vec_right.head[i]));
-      sum += vec_left.head[i];
+      int diff = abs((vec_left.head[i] - vec_right.head[i]));
+      part1 += diff;
    }
 
-   printf("%d\n", sum);
+   printf("%d\n", part1);
+
+   int max_right = vec_right.head[vec_right.size - 1];
+   
+   Vec counts_right = create_vec(max_right);
+
+   // Count occurances in right vector
+   for (size_t i = 0; i < (vec_right.size); i++)
+   {
+      counts_right.head[vec_right.head[i]] += 1; 
+   }
+
+   int part2 = 0;
+   // Check simliarity with left vector
+   for (size_t i = 0; i < (vec_left.size); i++)
+   {
+      int similarity = counts_right.head[vec_left.head[i]] * vec_left.head[i]; 
+      part2 += similarity;
+   }
+
+    printf("%d\n", part2);
 
    free_vec(vec_left);
    free_vec(vec_right);
-   
+   free_vec(counts_right);
 
    return 0;
 }

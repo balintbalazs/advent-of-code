@@ -16,7 +16,7 @@ typedef struct
 
 Vec create_vec(int capacity)
 {
-    int *head = malloc(capacity * sizeof(int));
+    int *head = calloc(capacity, sizeof(int));
 
     Vec vec;
     vec.head = head;
