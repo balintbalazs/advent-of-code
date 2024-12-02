@@ -1,4 +1,9 @@
 /target
 /inputs
 *.out
-*[^.]*     # Ignores files that don't have a dot.
+
+# ignore everything in the c folder
+# except for files with .c and .h extension
+c/*
+!c/*.c
+!c/*.h
