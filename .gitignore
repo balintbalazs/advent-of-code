@@ -1,3 +1,4 @@
 /target
 /inputs
 *.out
+*[^.]*     # Ignores files that don't have a dot.
