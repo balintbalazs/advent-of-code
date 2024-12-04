@@ -1,7 +1,4 @@
 #include <stdio.h>
-#include <ctype.h>
-#include <string.h>
-#include "vec.h"
 
 #define bool int
 #define true 1
