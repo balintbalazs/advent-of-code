@@ -84,4 +84,13 @@ void sort_vec(Vec *vector)
     qsort(vector->head, vector->size, sizeof(int), compare_ints);
 }
 
+// vector must be sorted before this is called
+int sorted_vec_contains(Vec *vector, int num)
+{
+    int const *res = bsearch(&num, vector->head, vector->size,
+                             sizeof(int), compare_ints);
+
+    return res != NULL;
+}
+
 #endif
