@@ -22,7 +22,6 @@ int main()
     }
 
     int part1 = 0;
-    int part2 = 0;
 
     char *table[num_rows];
 
@@ -56,15 +55,7 @@ int main()
                 {
                     part1 += 1;
                 }
-            }
-            // horizontal back
-            if (c + 3 < num_cols)
-            {
-                buff[3] = table[r][c];
-                buff[2] = table[r][c + 1];
-                buff[1] = table[r][c + 2];
-                buff[0] = table[r][c + 3];
-                if (strcmp(buff, "XMAS") == 0)
+                if (strcmp(buff, "SAMX") == 0)
                 {
                     part1 += 1;
                 }
@@ -80,15 +71,7 @@ int main()
                 {
                     part1 += 1;
                 }
-            }
-            // vertical back
-            if (r + 3 < num_rows)
-            {
-                buff[3] = table[r][c];
-                buff[2] = table[r + 1][c];
-                buff[1] = table[r + 2][c];
-                buff[0] = table[r + 3][c];
-                if (strcmp(buff, "XMAS") == 0)
+                if (strcmp(buff, "SAMX") == 0)
                 {
                     part1 += 1;
                 }
@@ -104,6 +87,10 @@ int main()
                 {
                     part1 += 1;
                 }
+                if (strcmp(buff, "SAMX") == 0)
+                {
+                    part1 += 1;
+                }
             }
             // diagonal bot right
             if (r + 3 < num_rows && c + 3 < num_cols)
@@ -116,29 +103,59 @@ int main()
                 {
                     part1 += 1;
                 }
-            }
-            // diagonal top left
-            if (r + 3 < num_rows && c + 3 < num_cols)
-            {
-                buff[0] = table[r + 0][c + 3];
-                buff[1] = table[r + 1][c + 2];
-                buff[2] = table[r + 2][c + 1];
-                buff[3] = table[r + 3][c + 0];
-                if (strcmp(buff, "XMAS") == 0)
+                if (strcmp(buff, "SAMX") == 0)
                 {
                     part1 += 1;
                 }
             }
-            // diagonal bot right
-            if (r + 3 < num_rows && c + 3 < num_cols)
+            // printf("\n");
+        }
+    }
+
+    int part2 = 0;
+    char buff2[5];
+
+    for (size_t r = 0; r < num_rows - 2; r++)
+    {
+        for (size_t c = 0; c < num_cols - 2; c++)
+        {
             {
-                buff[0] = table[r + 3][c + 3];
-                buff[1] = table[r + 2][c + 2];
-                buff[2] = table[r + 1][c + 1];
-                buff[3] = table[r + 0][c + 0];
-                if (strcmp(buff, "XMAS") == 0)
+                // printf("r: %d, c: %d\n", r, c);
+                buff2[0] = table[r + 0][c + 0];
+                buff2[1] = table[r + 0][c + 2];
+                buff2[2] = table[r + 1][c + 1];
+                buff2[3] = table[r + 2][c + 0];
+                buff2[4] = table[r + 2][c + 2];
+
+                // printf("%s\n", buff2);
+
+                // M.S
+                // .A.
+                // M.S
+                if (strcmp(buff2, "MSAMS") == 0)
                 {
-                    part1 += 1;
+                    part2 += 1;
+                }
+                // M.M
+                // .A.
+                // S.S
+                if (strcmp(buff2, "MMASS") == 0)
+                {
+                    part2 += 1;
+                }
+                // S.M
+                // .A.
+                // S.M
+                if (strcmp(buff2, "SMASM") == 0)
+                {
+                    part2 += 1;
+                }
+                // S.S
+                // .A.
+                // M.M
+                if (strcmp(buff2, "SSAMM") == 0)
+                {
+                    part2 += 1;
                 }
             }
             // printf("\n");
