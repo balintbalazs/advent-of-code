@@ -1,12 +1,16 @@
 #include <stdio.h>
 #include "vec.h"
 
+#define bool int
+#define true 1
+#define false 0
+
 int main()
 {
    FILE *fptr;
 
    // Open a file in read mode
-   fptr = fopen("../inputs/day5.ex", "r");
+   fptr = fopen("../inputs/day5.in", "r");
 
    // Early exit if the file does not exist
    if (fptr == NULL)
@@ -33,12 +37,6 @@ int main()
       // all numbers are 2 digits
       push_vec(&ordering, left * 100 + right);
    }
-
-   for (size_t i = 0; i < ordering.size; i++)
-   {
-      printf("%d\n", ordering.head[i]);
-   }
-   printf("\n");
 
    // last fscan that fails will consume first number of updates section
    int ret = fseek(fptr, pos, SEEK_SET);
@@ -79,19 +77,8 @@ int main()
    // somehow off by 1? an extra line is read
    int line_count = line_index;
 
-   printf("%d\n\n", line_count);
-
    // Close the file
    fclose(fptr);
-
-   for (size_t l = 0; l < line_count; l++)
-   {
-      for (size_t i = 0; i < updates[l].size; i++)
-      {
-         printf("%d ", updates[l].head[i]);
-      }
-      printf("\n");
-   }
 
    // part 1
 
@@ -99,13 +86,50 @@ int main()
    sort_vec(&ordering);
 
    int part1 = 0;
+   int part2 = 0;
 
    for (size_t l = 0; l < line_count; l++)
    {
       // do the stuff
+      bool valid = true;
+      for (size_t i = 0; i < updates[l].size - 1; i++)
+      {
+         for (size_t j = i + 1; j < updates[l].size; j++)
+         {
+            int invalid_rule = updates[l].head[i] + 100 * updates[l].head[j];
+
+            if (sorted_vec_contains(&ordering, invalid_rule))
+            {
+               valid = false;
+               // swap invalid  values
+               int tmp = updates[l].head[i];
+               updates[l].head[i] = updates[l].head[j];
+               updates[l].head[j] = tmp;
+               // start from beginning
+               i = 0;
+               j = 1;
+            }
+         }
+         // only used in part 1
+         // if (!valid) {
+         //    continue;
+         // }
+      }
+
+      if (valid)
+      {
+         size_t middle = updates[l].size / 2;
+         part1 += updates[l].head[middle];
+      }
+      else
+      {
+         size_t middle = updates[l].size / 2;
+         part2 += updates[l].head[middle];
+      }
    }
 
-   printf("\n\npart1: %d\n", part1);
+   printf("\npart1: %d\n", part1);
+   printf("\npart2: %d\n", part2);
 
    // clean up
    for (size_t line = 0; line < line_count; line++)
