@@ -145,12 +145,12 @@ int main()
             count += 1;
         }
 
-        printf("%ld: ", target);
-        for (size_t i = 0; i < count; i++)
-        {
-            printf("%ld ", nums[i]);
-        }
-        printf("\n");
+        // printf("%ld: ", target);
+        // for (size_t i = 0; i < count; i++)
+        // {
+        //     printf("%ld ", nums[i]);
+        // }
+        // printf("\n");
 
         int combinations = 1 << count;
 
