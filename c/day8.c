@@ -39,12 +39,17 @@ int main()
 
     fclose(fptr);
 
+    // list of Vecs for each frequency
+    // list is indexed by frequency id (char)
+    // each Vec has 2 elements per antenna, row index (r) and col index (c)
+    // so antennas[i].size == 2 * antennas of the same frequency
     Vec antennas[128];
     for (size_t i = 0; i < 128; i++)
     {
         antennas[i] = create_vec(20);
     }
 
+    // set of unique frequencies
     Vec frequencies = create_vec(128);
 
     // ignore endline
@@ -56,12 +61,14 @@ int main()
         {
             if (map[r][c] != '.')
             {
+                // keep track of unique frequencies
                 bool found = sorted_vec_contains(&frequencies, map[r][c]);
                 if (!found)
                 {
                     push_vec(&frequencies, map[r][c]);
                     sort_vec(&frequencies);
                 }
+                // keep track of antenna coordinates
                 push_vec(&antennas[map[r][c]], r);
                 push_vec(&antennas[map[r][c]], c);
                 // remove antennas from map so ovelapping antinodes can be put on map
