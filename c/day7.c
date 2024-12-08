@@ -1,19 +1,35 @@
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 
 #define bool int
 #define true 1
 #define false 0
 
-int num_digits(long num)
+long num_digits(long num)
 {
-    int digits = 0;
+    long digits = 0;
     do
     {
         num = num / 10;
         digits += 1;
     } while (num);
     return digits;
+}
+
+long ipow(long base, long exp)
+{
+    long result = 1;
+    while (exp)
+    {
+        if (exp & 1)
+        {
+            result *= base;
+        }
+        exp >>= 1;
+        base *= base;
+    }
+    return result;
 }
 
 long eval(long *nums, int count, char *ops)
@@ -49,6 +65,42 @@ long eval(long *nums, int count, char *ops)
     return res;
 }
 
+long eval2(long *nums, int count, char *ops)
+{
+    // printf("Checking\n");
+    // for (size_t i = 0; i < count; i++)
+    // {
+    //     printf("%d", nums[i]);
+    //     if (i < count - 1)
+    //     {
+    //         printf("%c", ops[i]);
+    //     }
+    // }
+    // printf("\n");
+
+    long res = nums[0];
+    for (size_t i = 1; i < count; i++)
+    {
+        switch (ops[i - 1])
+        {
+        case '+':
+            res = res + nums[i];
+            break;
+        case '*':
+            res = res * nums[i];
+            break;
+        case '|':
+            res = res * ipow(10, num_digits(nums[i])) + nums[i];
+            break;
+
+        default:
+            break;
+        }
+    }
+    // printf("result: %ld\n\n", res);
+    return res;
+}
+
 int main()
 {
     FILE *fptr;
@@ -70,6 +122,7 @@ int main()
     int line_index = 0;
 
     long part1 = 0;
+    long part2 = 0;
 
     long nums[50];
     char ops[50];
@@ -79,25 +132,25 @@ int main()
         line_len = strlen(line);
 
         long target;
-        sscanf(line, "%lld:", &target);
+        sscanf(line, "%ld:", &target);
         // number, ':', space
         int offset = num_digits(target) + 2;
 
         long buff;
         int count = 0;
-        while (sscanf(line + offset, "%lld", &buff) == 1)
+        while (offset < line_len && sscanf(line + offset, "%ld", &buff) == 1)
         {
             nums[count] = buff;
             offset += num_digits(buff) + 1;
             count += 1;
         }
 
-        // printf("target: %ld\n", target);
-        // for (size_t i = 0; i < count; i++)
-        // {
-        //     printf("%ld ", nums[i]);
-        // }
-        // printf("\n");
+        printf("%ld: ", target);
+        for (size_t i = 0; i < count; i++)
+        {
+            printf("%ld ", nums[i]);
+        }
+        printf("\n");
 
         int combinations = 1 << count;
 
@@ -123,6 +176,44 @@ int main()
                 break;
             }
         }
+
+        long max_combinations = ipow(3, count - 1);
+        for (size_t c = 0; c < max_combinations; c++)
+        {
+            size_t cb = c;
+            for (size_t i = 0; i < count - 1; i++)
+            {
+                if (cb % 3 == 0)
+                {
+                    ops[i] = '+';
+                }
+                else if (cb % 3 == 1)
+                {
+                    ops[i] = '*';
+                }
+                else if (cb % 3 == 2)
+                {
+                    ops[i] = '|';
+                }
+                cb = cb / 3;
+            }
+
+            if (target == eval2(nums, count, ops))
+            {
+                // printf("Found\t%ld=", target);
+                // for (size_t i = 0; i < count; i++)
+                // {
+                //     printf("%d", nums[i]);
+                //     if (i < count - 1)
+                //     {
+                //         printf("%c", ops[i]);
+                //     }
+                // }
+                // printf("\n");
+                part2 += target;
+                break;
+            }
+        }
     }
 
     // Close the file
@@ -130,6 +221,7 @@ int main()
 
     // part 1
     printf("\npart1: %ld\n", part1);
+    printf("\npart2: %ld\n", part2);
 
     return 0;
 }
